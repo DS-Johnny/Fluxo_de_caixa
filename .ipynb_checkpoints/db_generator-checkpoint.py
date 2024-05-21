@@ -45,14 +45,14 @@ def main():
 
     sql_create_conta_table = """CREATE TABLE IF NOT EXISTS conta(
                                 id_conta INTEGER primary key autoincrement,
-                                nome TEXT(100) not null,
+                                conta TEXT(100) not null,
                                 saldo REAL
                                 ); """
     
     sql_create_categoria = """CREATE TABLE IF NOT EXISTS categoria(
                                 id_categoria INTEGER primary key autoincrement,
                                 tipo TEXT(50) not null,
-                                nome TEXT(50) not null
+                                categoria TEXT(50) not null
                                 )"""
     sql_create_password = """CREATE TABLE IF NOT EXISTS password(
                                 password 

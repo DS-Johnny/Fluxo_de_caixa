@@ -85,7 +85,7 @@ def id_conta(conta : str):
     conn = create_connection(database)
     conn.row_factory = dict_factory
     
-    sql = "SELECT id_conta FROM conta WHERE nome = ?"
+    sql = "SELECT id_conta FROM conta WHERE conta = ?"
     
     with conn:
         try:
@@ -104,7 +104,7 @@ def id_categoria(categoria : str):
     conn = create_connection(database)
     conn.row_factory = dict_factory
     
-    sql = "SELECT id_categoria FROM categoria WHERE nome = ?"
+    sql = "SELECT id_categoria FROM categoria WHERE categoria = ?"
     
     with conn:
         try:
@@ -116,6 +116,30 @@ def id_categoria(categoria : str):
             
         except Error as e:
             return e
+        
+def consulta_base():
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = """
+        SELECT 
+             *
+        FROM movimentacoes m LEFT JOIN conta c ON(c.id_conta = m.id_conta)
+        LEFT JOIN categoria c2 ON (c2.id_categoria = m.id_categoria) 
+        """
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql)
+            consulta = cur.fetchall()
+            
+            return consulta
+            
+        except Error as e:
+            return e
+        
         
 #=-=-=-=-=-=-=-==-=-=-=-=-=--==-- INSERT
 
@@ -135,15 +159,15 @@ def adicionar_senha(senha : str):
             return e
 
         
-def adicionar_conta(nome : str):
+def adicionar_conta(conta : str):
     database = "fluxo.db"
     conn = create_connection(database)
-    sql = ''' INSERT INTO conta(nome)
+    sql = ''' INSERT INTO conta(conta)
               VALUES(?)'''
     with conn:
         try:
             cur = conn.cursor()
-            cur.execute(sql, (nome,))
+            cur.execute(sql, (conta,))
             conn.commit()
             return cur.lastrowid
         
@@ -151,15 +175,15 @@ def adicionar_conta(nome : str):
             return e
         
         
-def adicionar_categoria(tipo : str, nome : str):
+def adicionar_categoria(tipo : str, categoria : str):
     database = "fluxo.db"
     conn = create_connection(database)
-    sql = ''' INSERT INTO categoria(tipo, nome)
+    sql = ''' INSERT INTO categoria(tipo, categoria)
               VALUES(?,?)'''
     with conn:
         try:
             cur = conn.cursor()
-            cur.execute(sql, (tipo, nome))
+            cur.execute(sql, (tipo, categoria))
             conn.commit()
             return cur.lastrowid
         
