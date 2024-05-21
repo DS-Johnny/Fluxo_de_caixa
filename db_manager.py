@@ -61,6 +61,25 @@ def consultar_contas():
         except Error as e:
             return e
         
+        
+def consultar_categorias(tipo : str):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT * FROM categoria WHERE tipo = ?"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (tipo,))
+            consulta = cur.fetchall()
+            
+            return consulta
+            
+        except Error as e:
+            return e
+        
 
 #=-=-=-=-=-=-=-==-=-=-=-=-=--==-- INSERT
 
