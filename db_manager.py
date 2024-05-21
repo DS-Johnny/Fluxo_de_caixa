@@ -80,7 +80,43 @@ def consultar_categorias(tipo : str):
         except Error as e:
             return e
         
+def id_conta(conta : str):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT id_conta FROM conta WHERE nome = ?"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (conta,))
+            consulta = cur.fetchone()
+            
+            return consulta['id_conta']
+            
+        except Error as e:
+            return e
 
+        
+def id_categoria(categoria : str):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT id_categoria FROM categoria WHERE nome = ?"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (categoria,))
+            consulta = cur.fetchone()
+            
+            return consulta['id_categoria']
+            
+        except Error as e:
+            return e
+        
 #=-=-=-=-=-=-=-==-=-=-=-=-=--==-- INSERT
 
 def adicionar_senha(senha : str):
@@ -127,5 +163,20 @@ def adicionar_categoria(tipo : str, nome : str):
             conn.commit()
             return cur.lastrowid
         
+        except Error as e:
+            return e
+        
+def adicionar_movimentacao(data, tipo, id_categoria, id_conta, comentario, valor):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    sql = ''' INSERT INTO movimentacoes(data, tipo, id_categoria, id_conta, comentario, valor)
+            values(?,?,?,?,?,?)'''
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (data, tipo, id_categoria, id_conta, comentario, valor))
+            conn.commit()
+            return cur.lastrowid
         except Error as e:
             return e

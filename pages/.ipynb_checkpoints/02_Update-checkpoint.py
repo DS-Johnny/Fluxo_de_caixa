@@ -46,14 +46,23 @@ with st.container():
             cat_lista, key='cat_lista'
             )
         
+        id_conta = dbm.id_conta(conta)
+        id_categoria = dbm.id_categoria(categoria)
+        
         valor = st.number_input("Valor:")
         comentario = st.text_area("Comentário:")
         
+        
         if st.button("Adicionar", key='mov'):
-            dbm.adicionar_conta(text_input)
             st.write("Movimentação registrada")
+            st.write(data, id_conta, option, id_categoria, valor, comentario)
+            dbm.adicionar_movimentacao(data, id_conta, option, id_categoria, comentario, valor)
         else:
             st.write("Aperte o botão para registrar")
+            
+        
+            
+        
         
         
 #-=-=-=-=-=-=-=-=-=-=-=-=-=- INSERIR BANCO        
