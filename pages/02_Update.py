@@ -62,6 +62,7 @@ with st.container():
                     st.write("Movimentação registrada")
                     st.write(data, option, id_categoria, id_conta, comentario, valor)
                     dbm.adicionar_movimentacao(data, option, id_categoria, id_conta, comentario, valor)
+                    dbm.atualizar_saldo(option, valor, id_conta)
                 else:
                     st.write("Aperte o botão para registrar")
         else:
@@ -84,9 +85,11 @@ with st.container():
             "Digite o nome da conta ou banco:",
             "Exemplo: Banco do Brasil",
         )
+        saldo_inicial = st.number_input("Saldo inicial:")
+        
         if st.button("Adicionar", key='conta'):
             if text_input:
-                dbm.adicionar_conta(text_input)
+                dbm.adicionar_conta(text_input, saldo_inicial)
                 st.write("Conta registrada")
             else:
                 st.error("O nome da conta não pode estar vazio.")

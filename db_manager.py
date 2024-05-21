@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 
+# Cria conexão com o banco de dados
 def create_connection(arquivo_db):
     """ Cria conexão com o banco de dados SQLite
         especificado por arquivo_db
@@ -117,6 +118,24 @@ def id_categoria(categoria : str):
         except Error as e:
             return e
         
+def saldo_conta(id_conta):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT saldo FROM conta WHERE id_conta = ?"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (id_conta,))
+            consulta = cur.fetchone()
+            
+            return consulta['saldo']
+            
+        except Error as e:
+            return e
+
 def consulta_base():
     database = "fluxo.db"
     conn = create_connection(database)
@@ -159,15 +178,15 @@ def adicionar_senha(senha : str):
             return e
 
         
-def adicionar_conta(conta : str):
+def adicionar_conta(conta : str, saldo : float):
     database = "fluxo.db"
     conn = create_connection(database)
-    sql = ''' INSERT INTO conta(conta)
-              VALUES(?)'''
+    sql = ''' INSERT INTO conta(conta, saldo)
+              VALUES(?,?)'''
     with conn:
         try:
             cur = conn.cursor()
-            cur.execute(sql, (conta,))
+            cur.execute(sql, (conta, saldo))
             conn.commit()
             return cur.lastrowid
         
@@ -204,3 +223,32 @@ def adicionar_movimentacao(data, tipo, id_categoria, id_conta, comentario, valor
             return cur.lastrowid
         except Error as e:
             return e
+        
+        
+        
+# -------=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=- UPDATE
+def atualizar_saldo(tipo, valor, id_conta):
+    saldo = saldo_conta(id_conta)
+    
+    if tipo == 'Entrada':
+        saldo += valor
+    elif tipo == 'Saída':
+        saldo -= valor
+    
+    database = "fluxo.db"
+    conn = create_connection(database)
+    sql = ''' UPDATE conta
+                SET saldo = ?
+                WHERE id_conta = ?'''
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (saldo, id_conta))
+            conn.commit
+            return cur.lastrowid
+        except Error as e:
+            return e
+
+    
+    
