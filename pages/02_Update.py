@@ -55,8 +55,8 @@ with st.container():
         
         if st.button("Adicionar", key='mov'):
             st.write("Movimentação registrada")
-            st.write(data, id_conta, option, id_categoria, valor, comentario)
-            dbm.adicionar_movimentacao(data, id_conta, option, id_categoria, comentario, valor)
+            st.write(data, option, id_categoria, id_conta, comentario, valor)
+            dbm.adicionar_movimentacao(data, option, id_categoria, id_conta, comentario, valor)
         else:
             st.write("Aperte o botão para registrar")
             
