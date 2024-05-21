@@ -17,8 +17,43 @@ with st.container():
 # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR MOVIMENTAÇÃO
     with mov:
         st.markdown("Movimentações")
+        
+        col1, col2 = st.columns(2)
+        with col1:
+            data = st.date_input("Data:", format="DD/MM/YYYY")
+            contas = dbm.consultar_contas()
+            contas_lista = []
+            for i in contas:
+                contas_lista.append(i['nome'])
+            conta = st.selectbox(
+            "Conta:",
+            contas_lista, key='cont_lista'
+            )
+        
+        with col2:
+            
+            option = st.selectbox(
+            "Tipo:",
+            ("Entrada", "Saída"), key='tipo_mov')
+        
+            categorias = dbm.consultar_categorias(option)
+            cat_lista = []
+            for i in categorias:
+                cat_lista.append(i['nome'])
 
-
+            categoria = st.selectbox(
+            "Categoria:",
+            cat_lista, key='cat_lista'
+            )
+        
+        valor = st.number_input("Valor:")
+        comentario = st.text_area("Comentário:")
+        
+        if st.button("Adicionar", key='mov'):
+            dbm.adicionar_conta(text_input)
+            st.write("Movimentação registrada")
+        else:
+            st.write("Aperte o botão para registrar")
         
         
 #-=-=-=-=-=-=-=-=-=-=-=-=-=- INSERIR BANCO        

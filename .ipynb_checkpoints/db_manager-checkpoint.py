@@ -42,7 +42,43 @@ def consultar_senha():
             
         except Error as e:
             return e
+
+def consultar_contas():
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT * FROM conta"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql)
+            consulta = cur.fetchall()
+            
+            return consulta
+            
+        except Error as e:
+            return e
         
+        
+def consultar_categorias(tipo : str):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT * FROM categoria WHERE tipo = ?"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (tipo,))
+            consulta = cur.fetchall()
+            
+            return consulta
+            
+        except Error as e:
+            return e
         
 
 #=-=-=-=-=-=-=-==-=-=-=-=-=--==-- INSERT
@@ -56,6 +92,38 @@ def adicionar_senha(senha : str):
         try:
             cur = conn.cursor()
             cur.execute(sql, (senha,))
+            conn.commit()
+            return cur.lastrowid
+        
+        except Error as e:
+            return e
+
+        
+def adicionar_conta(nome : str):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    sql = ''' INSERT INTO conta(nome)
+              VALUES(?)'''
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (nome,))
+            conn.commit()
+            return cur.lastrowid
+        
+        except Error as e:
+            return e
+        
+        
+def adicionar_categoria(tipo : str, nome : str):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    sql = ''' INSERT INTO categoria(tipo, nome)
+              VALUES(?,?)'''
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (tipo, nome))
             conn.commit()
             return cur.lastrowid
         
