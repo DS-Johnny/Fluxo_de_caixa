@@ -11,40 +11,49 @@ df = pd.DataFrame(dados) # Cria Dataframe com os dados da query
 
 moviment, contas = st.tabs(['Movimentações', 'Contas']) # Divide em duas guias
 
-with moviment:
-    col1, col2 = st.columns(2)
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  GUIA DE MOVIMENTAÇÕES
+with moviment: 
+    
+    col1, col2 = st.columns(2) # DUAS COLUNAS PARA OS FILTROS
+    
     with col1:
+        # FILTRO DO TIPO
         tipo = st.multiselect(
         "Tipo:", ['Entrada','Saída'],
         default=['Entrada', 'Saída']
         )
         
+        #FILTRO DE DATA, SELECIONA UM PERÍODO E RETORNA DOIS VALORES, UMA VARIÁVEL DA DATA DE INÍCIO E OUTRA DE FIM
         start_date, end_date = st.select_slider(
         "Selecione o período:",
         options=pd.Series(df['data'].unique()).sort_values(),
         value=(df['data'].min(), df['data'].max())
         )
     with col2:
-
+        
+        # FILTRO DE CONTA
         conta = st.multiselect(
             "Conta:",
             df['conta'].unique().tolist(),
             default=df['conta'].unique().tolist()
         )
         
+        # FILTRO DE CATEGORIA
         categoria = st.multiselect(
             "Categoria:",
             df['categoria'].unique().tolist(),
             default=df['categoria'].unique().tolist()
         )
         
-    
+    #APLICA TODOS OS FILTROS EM UM NOVO DATAFRAME
     df_filtrado = df[(df['conta'].isin(conta)) & (df['tipo'].isin(tipo)) & (df['categoria'].isin(categoria)) & (df['data'] >= start_date) & (df['data'] <= end_date)]
     
+    #SELECIONA E EXIBE APENAS AS COLUNAS NECESSÁRIAS
     df = df_filtrado[['data', 'tipo', 'categoria', 'conta', 'comentario', 'valor']] # Seleciona as colunas do DataFrame a serem exibidas
     st.dataframe(df, use_container_width=True) # Exibe dataframe
     
-
+    
+#=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-== GUIA DE CONTAS
 with contas:
     dados = dbm.consultar_contas() # Query com a tabela de contas e saldo
     df_conta = pd.DataFrame(dados) # Cria Dataframe
@@ -56,10 +65,12 @@ with contas:
 
 st.sidebar.title("Totais")
 
+# MÉTRICAS Estatísticas
 saldo_atual = df_conta['saldo'].sum()
 valor_total = df_filtrado['valor'].sum()
 media = df_filtrado['valor'].mean()
 qt_mov = df_filtrado['valor'].count()
+
 
 st.sidebar.metric(
     label='TOTAL MOVIMENTADO:',
