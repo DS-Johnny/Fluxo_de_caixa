@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import db_manager as dbm
 
-st.sidebar.title('Tabelas')
-
 
 st.title('Tabelas')
 st.markdown('''---''')
@@ -45,8 +43,41 @@ with moviment:
     
     df = df_filtrado[['data', 'tipo', 'categoria', 'conta', 'comentario', 'valor']] # Seleciona as colunas do DataFrame a serem exibidas
     st.dataframe(df, use_container_width=True) # Exibe dataframe
+    
 
 with contas:
     dados = dbm.consultar_contas() # Query com a tabela de contas e saldo
-    df = pd.DataFrame(dados) # Cria Dataframe
-    st.dataframe(df, use_container_width=True) # Exibe Dataframe
+    df_conta = pd.DataFrame(dados) # Cria Dataframe
+    st.dataframe(df_conta, use_container_width=True) # Exibe Dataframe
+    
+    
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- SIDEBAR
+
+st.sidebar.title("Totais")
+
+saldo_atual = df_conta['saldo'].sum()
+valor_total = df_filtrado['valor'].sum()
+media = df_filtrado['valor'].mean()
+qt_mov = df_filtrado['valor'].count()
+
+st.sidebar.metric(
+    label='TOTAL MOVIMENTADO:',
+    value=f'R$ {valor_total}'
+)
+
+st.sidebar.metric(
+    label='MÉDIA:',
+    value=f'R$ {media:.2f}'
+)
+
+st.sidebar.metric(
+    label='QUANTIDADE MOVIMENTAÇÕES:',
+    value=qt_mov
+)
+
+st.sidebar.markdown('''---''')
+st.sidebar.metric(
+    label='SALDO ATUAL:',
+    value=f'R$ {saldo_atual}'
+)
