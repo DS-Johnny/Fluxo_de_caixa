@@ -66,7 +66,7 @@ with st.container():
                 st.error("Conta ou Categoria não encontrada. Por favor, verifique os dados e tente novamente.")
             else:
                 valor = st.number_input("Valor:")
-                comentario = st.text_area("Comentário:")
+                comentario = st.text_area("Observação:")
                 
                 # Se o botão for pressionado
                 if st.button("Adicionar", key='mov'):

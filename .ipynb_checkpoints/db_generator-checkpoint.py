@@ -58,6 +58,12 @@ def main():
                                 password 
                                 )"""
     
+    sql_create_orcamento = """CREATE TABLE IF NOT EXISTS orcamento(
+                                id_orcamento INTEGER PRIMARY KEY NOT NULL,
+                                id_categoria INTEGER,
+                                valor REAL
+                                )"""
+    
     # Cria a conexão com o banco de dados
     conn = create_connection(database)
 
@@ -76,6 +82,8 @@ def main():
         # cria a tabela password
         create_table(conn, sql_create_password)
         
+        # cria a tabela orcamento
+        create_table(conn, sql_create_orcamento)
     else:
         print("Error! cannot create the database connection.")
 
