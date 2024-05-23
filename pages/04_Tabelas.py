@@ -9,10 +9,10 @@ st.markdown('''---''')
 dados = dbm.consulta_base() # QUERY com JOIN de todas as tabelas
 df = pd.DataFrame(dados) # Cria Dataframe com os dados da query
 
-moviment, contas = st.tabs(['Movimentações', 'Contas']) # Divide em duas guias
+trans, contas = st.tabs(['Transações', 'Contas']) # Divide em duas guias
 
-# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  GUIA DE MOVIMENTAÇÕES
-with moviment: 
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  GUIA DE TRANSAÇÕES
+with trans: 
     
     col1, col2 = st.columns(2) # DUAS COLUNAS PARA OS FILTROS
     
@@ -49,7 +49,7 @@ with moviment:
     df_filtrado = df[(df['conta'].isin(conta)) & (df['tipo'].isin(tipo)) & (df['categoria'].isin(categoria)) & (df['data'] >= start_date) & (df['data'] <= end_date)]
     
     #SELECIONA E EXIBE APENAS AS COLUNAS NECESSÁRIAS
-    df = df_filtrado[['data', 'tipo', 'categoria', 'conta', 'comentario', 'valor']] # Seleciona as colunas do DataFrame a serem exibidas
+    df = df_filtrado[['data', 'tipo', 'categoria', 'conta', 'descricao', 'valor']] # Seleciona as colunas do DataFrame a serem exibidas
     st.dataframe(df, use_container_width=True) # Exibe dataframe
     
     
@@ -83,7 +83,7 @@ st.sidebar.metric(
 )
 
 st.sidebar.metric(
-    label='QUANTIDADE MOVIMENTAÇÕES:',
+    label='QUANTIDADE DE TRANSAÇÕES:',
     value=qt_mov
 )
 
@@ -92,3 +92,7 @@ st.sidebar.metric(
     label='SALDO ATUAL:',
     value=f'R$ {saldo_atual}'
 )
+
+desp = df['valor'].sum()
+orc = desp/200
+my_bar = st.sidebar.progress(orc, text="Orçamento Lazer")

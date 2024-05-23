@@ -44,6 +44,7 @@ def consultar_senha():
         except Error as e:
             return e
 
+#Consultar Contas
 def consultar_contas():
     database = "fluxo.db"
     conn = create_connection(database)
@@ -62,7 +63,7 @@ def consultar_contas():
         except Error as e:
             return e
         
-        
+#Consultar categorias por tipo ENTRADA OU SAÍDA    
 def consultar_categorias(tipo : str):
     database = "fluxo.db"
     conn = create_connection(database)
@@ -80,7 +81,8 @@ def consultar_categorias(tipo : str):
             
         except Error as e:
             return e
-        
+
+# Consultar o id de uma conta por nome
 def id_conta(conta : str):
     database = "fluxo.db"
     conn = create_connection(database)
@@ -99,7 +101,7 @@ def id_conta(conta : str):
         except Error as e:
             return e
 
-        
+#Consultar o id de uma categoria por nome      
 def id_categoria(categoria : str):
     database = "fluxo.db"
     conn = create_connection(database)
@@ -117,7 +119,8 @@ def id_categoria(categoria : str):
             
         except Error as e:
             return e
-        
+
+# Consultar o saldo de uma conta por id da conta        
 def saldo_conta(id_conta):
     database = "fluxo.db"
     conn = create_connection(database)
@@ -144,7 +147,7 @@ def consulta_base():
     sql = """
         SELECT 
              *
-        FROM movimentacoes m LEFT JOIN conta c ON(c.id_conta = m.id_conta)
+        FROM transacoes m LEFT JOIN conta c ON(c.id_conta = m.id_conta)
         LEFT JOIN categoria c2 ON (c2.id_categoria = m.id_categoria) 
         """
     
@@ -194,37 +197,38 @@ def adicionar_conta(conta : str, saldo : float):
             return e
         
         
-def adicionar_categoria(tipo : str, categoria : str):
+def adicionar_categoria(tipo : str, categoria : str, limite : float):
     database = "fluxo.db"
     conn = create_connection(database)
-    sql = ''' INSERT INTO categoria(tipo, categoria)
-              VALUES(?,?)'''
+    sql = ''' INSERT INTO categoria(tipo, categoria, limite)
+              VALUES(?,?,?)'''
     with conn:
         try:
             cur = conn.cursor()
-            cur.execute(sql, (tipo, categoria))
+            cur.execute(sql, (tipo, categoria, limite))
             conn.commit()
             return cur.lastrowid
         
         except Error as e:
             return e
-        
-def adicionar_movimentacao(data, tipo, id_categoria, id_conta, comentario, valor):
+
+
+def adicionar_transacao(data, tipo, id_categoria, id_conta, descricao, valor):
     database = "fluxo.db"
     conn = create_connection(database)
-    sql = ''' INSERT INTO movimentacoes(data, tipo, id_categoria, id_conta, comentario, valor)
+    sql = ''' INSERT INTO transacoes(data, tipo, id_categoria, id_conta, descricao, valor)
             values(?,?,?,?,?,?)'''
     
     with conn:
         try:
             cur = conn.cursor()
-            cur.execute(sql, (data, tipo, id_categoria, id_conta, comentario, valor))
+            cur.execute(sql, (data, tipo, id_categoria, id_conta, descricao, valor))
             conn.commit()
             return cur.lastrowid
         except Error as e:
             return e
         
-        
+    
         
 # -------=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=- UPDATE
 def atualizar_saldo(tipo, valor, id_conta):

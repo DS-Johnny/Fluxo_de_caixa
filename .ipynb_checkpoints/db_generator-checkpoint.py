@@ -28,17 +28,17 @@ def create_table(conn, create_table_sql):
     except Error as e:
         return e
     
-    
+
 def main():
     database = "fluxo.db"
 
-    sql_create_movimentacoes_table = """CREATE TABLE IF NOT EXISTS movimentacoes(
+    sql_create_movimentacoes_table = """CREATE TABLE IF NOT EXISTS transacoes(
                                     id_movimentacao INTEGER primary key autoincrement,
                                     data DATE not null,
                                     tipo TEXT(50) not null,
                                     id_categoria INTEGER not null,
                                     id_conta INTEGER not null,
-                                    comentario TEXT(300),
+                                    descricao TEXT(300),
                                     valor REAL not null
                                 ); """
     
@@ -52,17 +52,15 @@ def main():
     sql_create_categoria = """CREATE TABLE IF NOT EXISTS categoria(
                                 id_categoria INTEGER primary key autoincrement,
                                 tipo TEXT(50) not null,
-                                categoria TEXT(50) not null
+                                categoria TEXT(50) not null,
+                                limite REAL
                                 )"""
+    
     sql_create_password = """CREATE TABLE IF NOT EXISTS password(
                                 password 
                                 )"""
     
-    sql_create_orcamento = """CREATE TABLE IF NOT EXISTS orcamento(
-                                id_orcamento INTEGER PRIMARY KEY NOT NULL,
-                                id_categoria INTEGER,
-                                valor REAL
-                                )"""
+
     
     # Cria a conexão com o banco de dados
     conn = create_connection(database)
@@ -82,8 +80,7 @@ def main():
         # cria a tabela password
         create_table(conn, sql_create_password)
         
-        # cria a tabela orcamento
-        create_table(conn, sql_create_orcamento)
+
     else:
         print("Error! cannot create the database connection.")
 

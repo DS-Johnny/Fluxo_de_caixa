@@ -8,13 +8,13 @@ st.title("UPDATE")
 st.markdown('''---''')
 
 with st.container():
-    mov, banc, cat = st.tabs(['Inserir Movimentação', 'Inserir Conta', 'Inserir Categoria'])
+    mov, banc, cat = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria'])
 
-    # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR MOVIMENTAÇÃO
+    # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR TRANSAÇÃO
     with mov:
-        st.markdown("Movimentações")
+        st.markdown("transações")
 
-        col1, col2 = st.columns(2) # Divide a sessão de movimentação em duas colunas
+        col1, col2 = st.columns(2) # Divide a sessão de transação em duas colunas
         
         with col1:
             data = st.date_input("Data:", format="DD/MM/YYYY") # Input calendário
@@ -66,13 +66,13 @@ with st.container():
                 st.error("Conta ou Categoria não encontrada. Por favor, verifique os dados e tente novamente.")
             else:
                 valor = st.number_input("Valor:")
-                comentario = st.text_area("Observação:")
+                descricao = st.text_area("Descrição:")
                 
                 # Se o botão for pressionado
                 if st.button("Adicionar", key='mov'):
                     st.write("Movimentação registrada")
-                    st.write(data, option, id_categoria, id_conta, comentario, valor)
-                    dbm.adicionar_movimentacao(data, option, id_categoria, id_conta, comentario, valor) # INSERE os dados no banco de dados
+                    st.write(data, option, id_categoria, id_conta, descricao, valor)
+                    dbm.adicionar_transacao(data, option, id_categoria, id_conta, descricao, valor) # INSERE os dados no banco de dados
                     dbm.atualizar_saldo(option, valor, id_conta) # Atualiza o saldo na tabela de contas
                 else:
                     st.write("Aperte o botão para registrar")
@@ -113,6 +113,7 @@ with st.container():
 
     # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR CATEGORIAS            
     with cat:
+        
         st.markdown("Categorias")
         # Dropdown com as opções de ENTRADA e Saída
         option = st.selectbox(
@@ -135,11 +136,18 @@ with st.container():
             "Exemplo: Aluguel",
         )
         
+        # Input para limite de orçamento de categoria
+        
+        if option == "Saída":
+            limite = st.number_input("Deseja especificar um limite para essa despesa?")
+        else:
+            limite = 0
+        
         # Se o botão for pressionado
         if st.button("Adicionar", key='categoria'):
             # Se houver input de texto
             if text_input:
-                dbm.adicionar_categoria(option, text_input) # INSERE no banco de dados a nova categoria
+                dbm.adicionar_categoria(option, text_input, limite) # INSERE no banco de dados a nova categoria
                 st.write("Categoria registrada")
             else:
                 st.error("O nome da categoria não pode estar vazio.")
