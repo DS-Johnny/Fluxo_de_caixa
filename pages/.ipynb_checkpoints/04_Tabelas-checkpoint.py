@@ -9,6 +9,37 @@ st.markdown('''---''')
 dados = dbm.consulta_base() # QUERY com JOIN de todas as tabelas
 df = pd.DataFrame(dados) # Cria Dataframe com os dados da query
 
+def mes(data : str):
+    meses = {
+        "01" : "Janeiro",
+        "02" : "Fevereiro",
+        "03" : "Março",
+        "04" : "Abril",
+        "05" : "Maio",
+        "06" : "Junho",
+        "07" : "Julho",
+        "08" : "Agosto",
+        "09" : "Setembro",
+        "10" : "Outubro",
+        "11" : "Novembro",
+        "12" : "Dezembro"}
+    
+    return meses[data]
+
+if dados:
+    df['mes'] = df['data'].apply(lambda x: mes(x[5:7])) # Cria uma coluna com o nome dos meses
+    mes = st.sidebar.multiselect(
+    "Mês:",
+    df['mes'].unique(),
+    default=df['mes'].unique()
+    )
+    df_mes = df[df['mes'].isin(mes)]
+    df = df_mes
+
+
+
+
+
 trans, contas = st.tabs(['Transações', 'Contas']) # Divide em duas guias
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  GUIA DE TRANSAÇÕES
