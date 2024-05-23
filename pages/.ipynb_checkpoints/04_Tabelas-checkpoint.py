@@ -94,5 +94,9 @@ st.sidebar.metric(
 )
 
 desp = df['valor'].sum()
-orc = desp/200
-my_bar = st.sidebar.progress(orc, text="Orçamento Lazer")
+orc = desp/300
+
+if orc > 1.0:
+    my_bar = st.sidebar.progress(100, text="Orçamento Lazer")
+else:
+    my_bar = st.sidebar.progress(orc, text="Orçamento Lazer")
