@@ -139,6 +139,26 @@ def saldo_conta(id_conta):
         except Error as e:
             return e
 
+
+def consultar_orcamentos():
+    database = "fluxo.db"
+    conn = create_connection(database)
+    conn.row_factory = dict_factory
+    
+    sql = "SELECT * FROM orcamento"
+    
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql)
+            consulta = cur.fetchall()
+            
+            return consulta
+            
+        except Error as e:
+            return e    
+    
+
 def consulta_base():
     database = "fluxo.db"
     conn = create_connection(database)
@@ -197,15 +217,15 @@ def adicionar_conta(conta : str, saldo : float):
             return e
         
         
-def adicionar_categoria(tipo : str, categoria : str, limite : float):
+def adicionar_categoria(tipo : str, categoria : str):
     database = "fluxo.db"
     conn = create_connection(database)
-    sql = ''' INSERT INTO categoria(tipo, categoria, limite)
-              VALUES(?,?,?)'''
+    sql = ''' INSERT INTO categoria(tipo, categoria)
+              VALUES(?,?)'''
     with conn:
         try:
             cur = conn.cursor()
-            cur.execute(sql, (tipo, categoria, limite))
+            cur.execute(sql, (tipo, categoria))
             conn.commit()
             return cur.lastrowid
         
@@ -228,7 +248,20 @@ def adicionar_transacao(data, tipo, id_categoria, id_conta, descricao, valor):
         except Error as e:
             return e
         
-    
+def adicionar_orcamento(id_categoria : int, categoria : str, limite : float):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    sql = ''' INSERT INTO orcamento(id_categoria, categoria, limite)
+              VALUES(?,?,?)'''
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (id_categoria, categoria, limite))
+            conn.commit()
+            return cur.lastrowid
+        
+        except Error as e:
+            return e
         
 # -------=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=- UPDATE
 def atualizar_saldo(tipo, valor, id_conta):

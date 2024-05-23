@@ -8,11 +8,11 @@ st.title("UPDATE")
 st.markdown('''---''')
 
 with st.container():
-    mov, banc, cat = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria'])
+    mov, banc, cat, orcamento = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orcamento'])
 
     # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR TRANSAÇÃO
     with mov:
-        st.markdown("transações")
+        st.markdown("Transações")
 
         col1, col2 = st.columns(2) # Divide a sessão de transação em duas colunas
         
@@ -69,7 +69,7 @@ with st.container():
                 descricao = st.text_area("Descrição:")
                 
                 # Se o botão for pressionado
-                if st.button("Adicionar", key='mov'):
+                if st.button("Registrar", key='mov'):
                     st.write("Movimentação registrada")
                     st.write(data, option, id_categoria, id_conta, descricao, valor)
                     dbm.adicionar_transacao(data, option, id_categoria, id_conta, descricao, valor) # INSERE os dados no banco de dados
@@ -102,7 +102,7 @@ with st.container():
         saldo_inicial = st.number_input("Saldo inicial:")
         
         # Se o botão for pressioando
-        if st.button("Adicionar", key='conta'):
+        if st.button("Registrar", key='conta'):
             if text_input: # Caso contenha informação de texto
                 dbm.adicionar_conta(text_input, saldo_inicial) # INSERE a conta e saldo inicial no banco de dados
                 st.write("Conta registrada")
@@ -135,22 +135,58 @@ with st.container():
             "Digite o nome da categoria:",
             "Exemplo: Aluguel",
         )
-        
-        # Input para limite de orçamento de categoria
-        
-        if option == "Saída":
-            limite = st.number_input("Deseja especificar um limite para essa despesa?")
-        else:
-            limite = 0
+
         
         # Se o botão for pressionado
-        if st.button("Adicionar", key='categoria'):
+        if st.button("Registrar", key='categoria'):
             # Se houver input de texto
             if text_input:
-                dbm.adicionar_categoria(option, text_input, limite) # INSERE no banco de dados a nova categoria
+                dbm.adicionar_categoria(option, text_input) # INSERE no banco de dados a nova categoria
                 st.write("Categoria registrada")
             else:
                 st.error("O nome da categoria não pode estar vazio.")
         else:
             st.write("Aperte o botão para registrar")
 
+    # =-=-=-=-=-=-=-=-=-=-=-=-=-=-= INSERIR ORCAMENTO
+    
+    with orcamento:
+        #Exibe tabela com orcamentos já registrado se existir
+        orcamentos = dbm.consultar_orcamentos()
+        #VERIFICA A EXISTÊNCIA e exibe tabela
+        if orcamentos:
+            df = pd.DataFrame(orcamentos)
+            st.dataframe(df[['categoria','limite']], use_container_width=True)
+        else:
+            st.error("Nenhum registro encontrado para Orçamento.")
+        
+        # Resgatar as categorias existentes caso existam, se não existirem, exibir mensagem de erro:
+        
+        categorias = dbm.consultar_categorias("Saída") # Query que retorna a tabela com as categorias
+            
+        #VERIFICA a existência das categorias no banco de dados
+        if categorias:
+            cat_lista = [i['categoria'] for i in categorias] # Coloca em uma lista apenas os nomes das categorias
+        else:
+            cat_lista = []
+            st.error("Nenhuma categoria encontrada para Saída. Adicione uma despesa antes de prosseguir.")
+            
+        # Exibe opções de despesas em uma dropdown list
+        
+        #Input dropdown com as categorias presentes no banco de dados
+        categoria = st.selectbox(
+            "Categoria:",
+            cat_lista, key='cat_lista_2'
+        )
+        
+        # Resgatar id da categoria pelo nome
+        if categoria:
+            id_categoria = dbm.id_categoria(categoria)
+            
+            # INPUT NUMÉRICO para adicionar um limite de orçamento para essa categoria de despesa
+            limite = st.number_input("Limite para essa categoria de despesa:")
+            
+            # Botão para registrar o novo orçamento
+            if st.button("Registrar", key="orcamento"):
+                dbm.adicionar_orcamento(id_categoria, categoria, limite)
+                

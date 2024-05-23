@@ -52,12 +52,18 @@ def main():
     sql_create_categoria = """CREATE TABLE IF NOT EXISTS categoria(
                                 id_categoria INTEGER primary key autoincrement,
                                 tipo TEXT(50) not null,
-                                categoria TEXT(50) not null,
-                                limite REAL
+                                categoria TEXT(50) not null
                                 )"""
     
     sql_create_password = """CREATE TABLE IF NOT EXISTS password(
                                 password 
+                                )"""
+    
+    sql_create_orcamento = """CREATE TABLE IF NOT EXISTS orcamento(
+                                id_orcamento INTEGER PRIMARY KEY autoincrement,
+                                id_categoria INTEGER NOT NULL,
+                                categoria TEXT(50) NOT NULL,
+                                limite REAL NOT NULL
                                 )"""
     
 
@@ -80,7 +86,8 @@ def main():
         # cria a tabela password
         create_table(conn, sql_create_password)
         
-
+        # cria a tabela orcamento
+        create_table(conn, sql_create_orcamento)
     else:
         print("Error! cannot create the database connection.")
 
