@@ -76,6 +76,7 @@ if transacoes:
             st.plotly_chart(fig)
             
     #SAIDA
+    st.markdown('''---''')
     df_saida = df[df['tipo'] == 'Saída']
     with st.container():
         st.markdown("### Saída")
