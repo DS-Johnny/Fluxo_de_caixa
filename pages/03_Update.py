@@ -8,7 +8,7 @@ st.title("UPDATE")
 st.markdown('''---''')
 
 with st.container():
-    mov, banc, cat, orcamento = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orcamento'])
+    mov, banc, cat, orcamento = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orçamento'])
 
     # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR TRANSAÇÃO
     with mov:
