@@ -8,7 +8,7 @@ st.title("UPDATE")
 st.markdown('''---''')
 
 with st.container():
-    mov, banc, cat, orcamento = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orcamento'])
+    mov, banc, cat, orcamento = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orçamento'])
 
     # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR TRANSAÇÃO
     with mov:
@@ -90,8 +90,8 @@ with st.container():
             st.error("Nenhuma conta encontrada.")
         
         st.markdown("Contas")
-        df = pd.DataFrame(contas_lista, columns=['Contas']) # Cria uma tabela com os nomes das contas
-        st.dataframe(df, use_container_width=True) # Exibe a tabela
+        df_contas = pd.DataFrame(contas_lista, columns=['Contas']) # Cria uma tabela com os nomes das contas
+        st.dataframe(df_contas, use_container_width=True) # Exibe a tabela
         
         # Input de texto
         text_input = st.text_input(
@@ -189,4 +189,15 @@ with st.container():
             # Botão para registrar o novo orçamento
             if st.button("Registrar", key="orcamento"):
                 dbm.adicionar_orcamento(id_categoria, categoria, limite)
-                
+
+# ----------------- SIDEBAR
+try:
+    st.sidebar.markdown("## Saldos:")
+    for i in range(len(contas)):
+        st.sidebar.markdown(f'### {contas[i]['conta']}')
+        st.sidebar.metric(
+        label=f'Saldo:',
+        value=f'R$ {contas[i]['saldo']}'
+    )
+except:
+    st.sidebar.warning("Não há dados para exibir.")
