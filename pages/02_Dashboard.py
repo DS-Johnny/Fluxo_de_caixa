@@ -1,9 +1,11 @@
 import streamlit as st
 import db_manager as dbm
 import pandas as pd
-import plotly.express as px
+
 
 transacoes = dbm.consulta_base()
+
+cor = '#386ee0'
 
 def mes(data : str):
     meses = {
@@ -50,28 +52,19 @@ if transacoes:
 
         # Ordenar os valores para uma visualização melhor
         entradas_por_categoria = entradas_por_categoria.sort_values(by='valor')
+        
+        # Plota o gráfico
+        st.bar_chart(data=entradas_por_categoria, x='valor', y='categoria', color=[cor], width=400, height=300, use_container_width=True)
 
-        # Plotar o gráfico de barras horizontais usando Plotly Express
-        fig = px.bar(entradas_por_categoria, x='valor', y='categoria', orientation='h', 
-                        labels={'valor': 'Total de Entrada', 'categoria': 'Categoria'},
-                        title='Entradas por Categoria')
-
-        # Mostrar o gráfico no Streamlit
-        st.plotly_chart(fig)
-    
         # Converter a coluna 'data' para datetime (caso não esteja)
         df_entrada['data'] = pd.to_datetime(df['data'])
 
         # Agrupar os dados por data e somar os valores dos gastos
         entrada_por_data = df_entrada.groupby('data')['valor'].sum().reset_index()
+        
+        # Plota o gráfico
+        st.line_chart(data=entrada_por_data, x='data', y='valor', color=[cor])
 
-        # Plotar o gráfico de linhas usando Plotly Express
-        fig = px.line(entrada_por_data, x='data', y='valor', 
-                        labels={'data': 'Datas', 'valor': 'Total Entrada'},
-                        title='Progressão de Entrada ao Longo do Tempo')
-        # Mostrar o gráfico no Streamlit
-        st.plotly_chart(fig)
-            
     #SAIDA
     st.markdown('''---''')
     df_saida = df[df['tipo'] == 'Saída']
@@ -85,13 +78,8 @@ if transacoes:
         # Ordenar os valores para uma visualização melhor
         gastos_por_categoria = gastos_por_categoria.sort_values(by='valor')
 
-        # Plotar o gráfico de barras horizontais usando Plotly Express
-        fig = px.bar(gastos_por_categoria, x='valor', y='categoria', orientation='h', 
-                        labels={'valor': 'Total de Gastos', 'categoria': 'Categoria'},
-                        title='Gastos por Categoria')
-
-        # Mostrar o gráfico no Streamlit
-        st.plotly_chart(fig)
+        # Plota o gráfico
+        st.bar_chart(data=gastos_por_categoria, x='valor', y='categoria', color=[cor], width=400, height=300, use_container_width=True)
     
         # Converter a coluna 'data' para datetime (caso não esteja)
         df_saida['data'] = pd.to_datetime(df['data'])
@@ -99,17 +87,8 @@ if transacoes:
         # Agrupar os dados por data e somar os valores dos gastos
         gastos_por_data = df_saida.groupby('data')['valor'].sum().reset_index()
 
-        # Plotar o gráfico de linhas usando Plotly Express
-        fig = px.line(gastos_por_data, x='data', y='valor', 
-                        labels={'data': 'Datas', 'valor': 'Total Gastos'},
-                        title='Progressão de Gastos ao Longo do Tempo')
-        # Mostrar o gráfico no Streamlit
-        st.plotly_chart(fig)
-
-    
-    
-    
-    
+        # Plota o gráfico
+        st.line_chart(data=gastos_por_data, x='data', y='valor', color=[cor])
     
     # =-=--=-=-=-=--=-=-=-=-=-=-=-=-=- Barras de Progresso
     st.sidebar.title("Orçamento:")
