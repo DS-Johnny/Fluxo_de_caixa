@@ -109,10 +109,10 @@ if transacoes:
             #Exibir barra de progresso
             if orcamento > 1.0:
                 st.sidebar.progress(1.0, text=categoria) # Se o gasto ultrapassar o orçamento, exibe a barra completa para evitar erro do widget
-                st.sidebar.markdown(f'R&#36; {despesa} de R&#36; {limite}')
+                st.sidebar.markdown(f'R&#36; {despesa:.2f} de R&#36; {limite:.2f}')
             else:
                 st.sidebar.progress(orcamento, text=categoria) # Exibe o progresso de acordo com a porcentagem
-                st.sidebar.markdown(f'R&#36; {despesa} de R&#36; {limite}')
+                st.sidebar.markdown(f'R&#36; {despesa:.2f} de R&#36; {limite:.2f}')
  
     else:
         st.sidebar.warning("Não foram encontrados orçamentos para despesas.")

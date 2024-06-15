@@ -111,7 +111,6 @@ try:
     # MÉTRICAS Estatísticas
     saldo_atual = df_conta['saldo'].sum()
     valor_total = df_filtrado['valor'].sum()
-    media = df_filtrado['valor'].mean()
     qt_mov = df_filtrado['valor'].count()
 
 
@@ -120,10 +119,6 @@ try:
         value=f'R$ {valor_total:.2f}'
     )
 
-    st.sidebar.metric(
-        label='MÉDIA:',
-        value=f'R$ {media:.2f}'
-    )
 
     st.sidebar.metric(
         label='QUANTIDADE DE TRANSAÇÕES:',

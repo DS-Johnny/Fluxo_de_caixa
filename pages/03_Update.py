@@ -5,6 +5,13 @@ import pandas as pd
 st.sidebar.title("UPDATE")
 
 st.title("UPDATE")
+
+st.text('''    Antes de registrar uma transação:\n
+                1 - Cadastrar um banco e saldo atual\n
+                2 - Inserir Categorias de Entrada e Saída\n
+                3 - Inserir limites/orçamentos para monitorar seus gastos
+''')
+
 st.markdown('''---''')
 
 with st.container():
