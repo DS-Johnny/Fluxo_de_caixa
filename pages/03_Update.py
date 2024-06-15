@@ -204,7 +204,7 @@ try:
         st.sidebar.markdown(f'### {contas[i]['conta']}')
         st.sidebar.metric(
         label=f'Saldo:',
-        value=f'R$ {contas[i]['saldo']}'
+        value=f'R$ {contas[i]['saldo']:.2f}'
     )
 except:
     st.sidebar.warning("Não há dados para exibir.")
