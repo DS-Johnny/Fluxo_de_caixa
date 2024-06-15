@@ -25,25 +25,26 @@ def mes(data : str):
         "12" : "Dezembro"}
     
     return meses[data]
+try:
+    if dados:
+        df['mes'] = df['data'].apply(lambda x: mes(x[5:7])) # Cria uma coluna com o nome dos meses
+        mes = st.sidebar.multiselect(
+        "Mês:",
+        df['mes'].unique(),
+        default=df['mes'].unique()
+        )
+        df_mes = df[df['mes'].isin(mes)]
+        df = df_mes
+except:
+    st.error('Não há informações suficientes.')
 
-if dados:
-    df['mes'] = df['data'].apply(lambda x: mes(x[5:7])) # Cria uma coluna com o nome dos meses
-    mes = st.sidebar.multiselect(
-    "Mês:",
-    df['mes'].unique(),
-    default=df['mes'].unique()
-    )
-    df_mes = df[df['mes'].isin(mes)]
-    df = df_mes
 
 
 
-
-
-trans, contas = st.tabs(['Transações', 'Contas']) # Divide em duas guias
+transacoes, contas = st.tabs(['Transações', 'Contas']) # Divide em duas guias
 
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=  GUIA DE TRANSAÇÕES
-with trans: 
+with transacoes: 
     
     col1, col2 = st.columns(2) # DUAS COLUNAS PARA OS FILTROS
     
@@ -55,34 +56,45 @@ with trans:
         )
         
         #FILTRO DE DATA, SELECIONA UM PERÍODO E RETORNA DOIS VALORES, UMA VARIÁVEL DA DATA DE INÍCIO E OUTRA DE FIM
-        start_date, end_date = st.select_slider(
-        "Selecione o período:",
-        options=pd.Series(df['data'].unique()).sort_values(),
-        value=(df['data'].min(), df['data'].max())
-        )
+        try:
+            start_date, end_date = st.select_slider(
+            "Selecione o período:",
+            options=pd.Series(df['data'].unique()).sort_values(),
+            value=(df['data'].min(), df['data'].max())
+            )
+        except:
+            st.error('Não há dias suficientes para gerar filtro de período.')
+
     with col2:
         
         # FILTRO DE CONTA
-        conta = st.multiselect(
-            "Conta:",
-            df['conta'].unique().tolist(),
-            default=df['conta'].unique().tolist()
-        )
-        
+        try:
+            conta = st.multiselect(
+                "Conta:",
+                df['conta'].unique().tolist(),
+                default=df['conta'].unique().tolist()
+            )
+        except:
+            st.error('Não há contas cadastradas.')
+
         # FILTRO DE CATEGORIA
-        categoria = st.multiselect(
-            "Categoria:",
-            df['categoria'].unique().tolist(),
-            default=df['categoria'].unique().tolist()
-        )
+        try:
+            categoria = st.multiselect(
+                "Categoria:",
+                df['categoria'].unique().tolist(),
+                default=df['categoria'].unique().tolist()
+            )
+        except:
+            st.error('Não há categorias cadastradas.')
+    try:        
+        #APLICA TODOS OS FILTROS EM UM NOVO DATAFRAME
+        df_filtrado = df[(df['conta'].isin(conta)) & (df['tipo'].isin(tipo)) & (df['categoria'].isin(categoria)) & (df['data'] >= start_date) & (df['data'] <= end_date)]
         
-    #APLICA TODOS OS FILTROS EM UM NOVO DATAFRAME
-    df_filtrado = df[(df['conta'].isin(conta)) & (df['tipo'].isin(tipo)) & (df['categoria'].isin(categoria)) & (df['data'] >= start_date) & (df['data'] <= end_date)]
-    
-    #SELECIONA E EXIBE APENAS AS COLUNAS NECESSÁRIAS
-    df = df_filtrado[['data', 'tipo', 'categoria', 'conta', 'descricao', 'valor']] # Seleciona as colunas do DataFrame a serem exibidas
-    st.dataframe(df, use_container_width=True) # Exibe dataframe
-    
+        #SELECIONA E EXIBE APENAS AS COLUNAS NECESSÁRIAS
+        df = df_filtrado[['data', 'tipo', 'categoria', 'conta', 'descricao', 'valor']] # Seleciona as colunas do DataFrame a serem exibidas
+        st.dataframe(df, use_container_width=True) # Exibe dataframe
+    except:
+        st.error('Não há transações para exibir na tabela.')    
     
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-== GUIA DE CONTAS
 with contas:
@@ -95,31 +107,33 @@ with contas:
 # -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- SIDEBAR
 
 st.sidebar.title("Totais")
+try:
+    # MÉTRICAS Estatísticas
+    saldo_atual = df_conta['saldo'].sum()
+    valor_total = df_filtrado['valor'].sum()
+    media = df_filtrado['valor'].mean()
+    qt_mov = df_filtrado['valor'].count()
 
-# MÉTRICAS Estatísticas
-saldo_atual = df_conta['saldo'].sum()
-valor_total = df_filtrado['valor'].sum()
-media = df_filtrado['valor'].mean()
-qt_mov = df_filtrado['valor'].count()
 
+    st.sidebar.metric(
+        label='TOTAL MOVIMENTADO:',
+        value=f'R$ {valor_total:.2f}'
+    )
 
-st.sidebar.metric(
-    label='TOTAL MOVIMENTADO:',
-    value=f'R$ {valor_total}'
-)
+    st.sidebar.metric(
+        label='MÉDIA:',
+        value=f'R$ {media:.2f}'
+    )
 
-st.sidebar.metric(
-    label='MÉDIA:',
-    value=f'R$ {media:.2f}'
-)
+    st.sidebar.metric(
+        label='QUANTIDADE DE TRANSAÇÕES:',
+        value=qt_mov
+    )
 
-st.sidebar.metric(
-    label='QUANTIDADE DE TRANSAÇÕES:',
-    value=qt_mov
-)
-
-st.sidebar.markdown('''---''')
-st.sidebar.metric(
-    label='SALDO ATUAL:',
-    value=f'R$ {saldo_atual}'
-)
+    st.sidebar.markdown('''---''')
+    st.sidebar.metric(
+        label='SALDO ATUAL:',
+        value=f'R$ {saldo_atual:.2f}'
+    )
+except:
+    st.sidebar.error('Não há informações para exibir')

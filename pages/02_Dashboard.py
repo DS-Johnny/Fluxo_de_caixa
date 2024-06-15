@@ -2,11 +2,13 @@ import streamlit as st
 import db_manager as dbm
 import pandas as pd
 
-
+#Consulta o banco de dados
 transacoes = dbm.consulta_base()
 
+#Cor dos plots gráficos
 cor = '#386ee0'
 
+# Função para ser utilizada no lambda com o objetivo de criar uma coluna com os meses nomeados em português
 def mes(data : str):
     meses = {
         "01" : "Janeiro",
