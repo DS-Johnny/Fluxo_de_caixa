@@ -32,8 +32,8 @@ def create_table(conn, create_table_sql):
 def main():
     database = "fluxo.db"
 
-    sql_create_movimentacoes_table = """CREATE TABLE IF NOT EXISTS transacoes(
-                                    id_movimentacao INTEGER primary key autoincrement,
+    sql_create_transacoes_table = """CREATE TABLE IF NOT EXISTS transacoes(
+                                    id_transacao INTEGER primary key autoincrement,
                                     data DATE not null,
                                     tipo TEXT(50) not null,
                                     id_categoria INTEGER not null,
@@ -66,16 +66,22 @@ def main():
                                 limite REAL NOT NULL
                                 )"""
     
-
+    sql_create_movimentacao = """CREATE TABLE IF NOT EXISTS movimentacao(
+                                id_movimentacao INTEGER PRIMARY KEY autoincrement,
+                                conta_debito TEXT NOT NULL
+                                conta_credito TEXT NOT NULL,
+                                valor REAL NOT NULL
+                                )"""
     
+
     # Cria a conexão com o banco de dados
     conn = create_connection(database)
 
     # Cria as tabelas
     if conn is not None:
         
-        # cria a tabela movimentações
-        create_table(conn, sql_create_movimentacoes_table)
+        # cria a tabela transacoes
+        create_table(conn, sql_create_transacoes_table)
 
         # cria a tabela conta
         create_table(conn, sql_create_conta_table)
@@ -88,6 +94,10 @@ def main():
         
         # cria a tabela orcamento
         create_table(conn, sql_create_orcamento)
+
+        # cria a tabela movimentação
+        create_table(sql_create_movimentacao)
+        
     else:
         print("Error! cannot create the database connection.")
 

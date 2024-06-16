@@ -15,7 +15,7 @@ st.text('''    Antes de registrar uma transação:\n
 st.markdown('''---''')
 
 with st.container():
-    mov, banc, cat, orcamento = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orçamento'])
+    mov, banc, cat, orcamento, movimentacao = st.tabs(['Inserir Transação', 'Inserir Conta', 'Inserir Categoria', 'Inserir Orçamento', 'Movimentação'])
 
     # -=-=-=-=-=-=-=-=-=-=-=-=- INSERIR TRANSAÇÃO
     with mov:
@@ -196,6 +196,45 @@ with st.container():
             # Botão para registrar o novo orçamento
             if st.button("Registrar", key="orcamento"):
                 dbm.adicionar_orcamento(id_categoria, categoria, limite)
+
+
+
+# ---------------------- Movimentação
+with movimentacao:
+    dados = dbm.consultar_contas() # Query com a tabela de contas e saldo
+    df_conta = pd.DataFrame(dados) # Cria Dataframe
+    st.dataframe(df_conta, use_container_width=True) # Exibe Dataframe
+    debit, cred = st.columns(2)
+
+    with debit:
+        st.write('Escolha a conta de débito:')
+        conta_deb = st.selectbox(
+                    "Conta:",
+                    contas_lista, key='cont_cred')
+
+    with cred:
+        st.write('Escolha a conta de crétido:')
+        conta_cred = st.selectbox(
+                "Conta:",
+                contas_lista, 
+                key='cont_deb')
+
+    valor_mov = st.number_input("Valor:", key='movimentacao')
+    dados = dbm.consultar_contas() # Query com a tabela de contas e saldo
+    df_conta = pd.DataFrame(dados) # Cria Dataframe
+    
+
+    saldo_conta_deb = df_conta[df_conta['conta'] == 'Banco do Brasil']['saldo'].iloc[0]
+    saldo_conta_cred = df_conta[df_conta['conta'] == 'CAIXA']['saldo'].iloc[0]
+
+    novo_saldo_deb = saldo_conta_deb - valor_mov
+    novo_saldo_cred = saldo_conta_cred + valor_mov
+
+    f'De {saldo_conta_deb = } para {saldo_conta_cred = }'
+    
+    if st.button("Transferir", key="movimento"):
+        dbm.movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred)
+
 
 # ----------------- SIDEBAR
 try:

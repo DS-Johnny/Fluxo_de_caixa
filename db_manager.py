@@ -282,10 +282,29 @@ def atualizar_saldo(tipo, valor, id_conta):
         try:
             cur = conn.cursor()
             cur.execute(sql, (saldo, id_conta))
-            conn.commit
+            conn.commit()
             return cur.lastrowid
         except Error as e:
             return e
 
     
+def movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred):
+    database = "fluxo.db"
+    conn = create_connection(database)
+    sql = '''UPDATE conta
+                SET saldo = ?
+                WHERE conta = ?'''
     
+    with conn:
+        try:
+            cur = conn.cursor()
+            
+            cur.execute(sql, (novo_saldo_deb, conta_deb))
+            conn.commit()
+
+            cur.execute(sql, (novo_saldo_cred, conta_cred))
+            conn.commit()
+
+            return cur.lastrowid
+        except Error as e:
+            return e

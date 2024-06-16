@@ -99,29 +99,32 @@ st.markdown('''---''')
 col4, col5 = st.columns(2)
 
 with col4:
-    st.write('Barra de progresso: Gastos X total entradas')
+
     progressao_gasto = gastos / entrada_total
-    st.write(f'{progressao_gasto}%')
     #Exibir barra de progresso
-    if progressao_gasto > 1.0:
-        st.progress(1.0, text='Gastos x Total Entradas') # Se o gasto ultrapassar o orçamento, exibe a barra completa para evitar erro do widget
-        st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e recebeu R&#36; {entrada_total:.2f}')
-    else:
-        st.progress(progressao_gasto, text='Gastos x Total Entradas') # Exibe o progresso de acordo com a porcentagem
-        st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e recebeu R&#36; {entrada_total:.2f}')
- 
+    try:
+        if progressao_gasto > 1.0:
+            st.progress(1.0, text='Gastos x Total Entradas') # Se o gasto ultrapassar o orçamento, exibe a barra completa para evitar erro do widget
+            st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e recebeu R&#36; {entrada_total:.2f}')
+        else:
+            st.progress(progressao_gasto, text='Gastos x Total Entradas') # Exibe o progresso de acordo com a porcentagem
+            st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e recebeu R&#36; {entrada_total:.2f}')
+    except:
+        st.warning('Não foi possível gerar a barra de progresso.')   
 
 with col5:
-    st.write('Barra de progresso: Gastos X Soma Orçamentos')
+    
     progressao_orcamento = gastos / total_orcamento
     #Exibir barra de progresso
-    if progressao_orcamento > 1.0:
-        st.progress(1.0, text='Gastos x Orçamento') # Se o gasto ultrapassar o orçamento, exibe a barra completa para evitar erro do widget
-        st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e recebeu R&#36; {total_orcamento:.2f}')
-    else:
-        st.progress(progressao_orcamento, text='Gastos x Orçamento') # Exibe o progresso de acordo com a porcentagem
-        st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e o limite estipulado é R&#36; {total_orcamento:.2f}')
-
+    try:
+        if progressao_orcamento > 1.0:
+            st.progress(1.0, text='Gastos x Orçamento') # Se o gasto ultrapassar o orçamento, exibe a barra completa para evitar erro do widget
+            st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e recebeu R&#36; {total_orcamento:.2f}')
+        else:
+            st.progress(progressao_orcamento, text='Gastos x Orçamento') # Exibe o progresso de acordo com a porcentagem
+            st.markdown(f'Neste mês você gastou R&#36; {gastos:.2f} e o limite estipulado é R&#36; {total_orcamento:.2f}')
+    except:
+        st.warning('Não foi possível gerar a barra de progresso.')
 st.markdown('''---''')
 # --------------------------- Tabelas
 
