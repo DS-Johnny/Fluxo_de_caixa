@@ -236,6 +236,7 @@ with movimentacao:
         #dbm.update_saldo(novo_saldo_deb, conta_deb)
         #dbm.update_saldo(novo_saldo_cred, df_conta)
         dbm.movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred)
+        dbm.adicionar_movimentacao(conta_deb, conta_cred, valor_mov)
 
 
 # ----------------- SIDEBAR

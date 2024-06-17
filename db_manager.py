@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+from datetime import datetime
 
 # Cria conexão com o banco de dados
 def create_connection(arquivo_db):
@@ -262,7 +263,31 @@ def adicionar_orcamento(id_categoria : int, categoria : str, limite : float):
         
         except Error as e:
             return e
+
+def adicionar_movimentacao(conta_debito, conta_credito, valor):
+    database = "fluxo.db"
+    
+    data_atual = datetime.today()
+    data_atual = data_atual.strftime('%Y-%m-%d')
+
+    conn = create_connection(database)
+    sql = '''INSERT INTO movimentacao(data_movimentacao, conta_debito, conta_credito, valor)
+            VALUES(?,?,?,?)'''
+    print(f'{data_atual = } | {conta_debito = } | {conta_credito = } | {valor = }')
+    with conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql, (data_atual, conta_debito, conta_credito, valor))
+            conn.commit()
+            
+            print(cur.lastrowid)
         
+        except Error as e:
+            print(e)
+            return e
+
+    
+
 # -------=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=- UPDATE
 def atualizar_saldo(tipo, valor, id_conta):
     saldo = saldo_conta(id_conta)

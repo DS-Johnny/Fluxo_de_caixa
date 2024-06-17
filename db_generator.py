@@ -68,6 +68,7 @@ def main():
     
     sql_create_movimentacao = """CREATE TABLE IF NOT EXISTS movimentacao(
                                 id_movimentacao INTEGER PRIMARY KEY autoincrement,
+                                data_movimentacao DATE NOT NULL,
                                 conta_debito TEXT NOT NULL
                                 conta_credito TEXT NOT NULL,
                                 valor REAL NOT NULL
