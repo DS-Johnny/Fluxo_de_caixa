@@ -224,8 +224,8 @@ with movimentacao:
     df_conta = pd.DataFrame(dados) # Cria Dataframe
     
 
-    saldo_conta_deb = df_conta[df_conta['conta'] == 'Banco do Brasil']['saldo'].iloc[0]
-    saldo_conta_cred = df_conta[df_conta['conta'] == 'CAIXA']['saldo'].iloc[0]
+    saldo_conta_deb = df_conta[df_conta['conta'] == conta_deb]['saldo'].iloc[0]
+    saldo_conta_cred = df_conta[df_conta['conta'] == conta_cred]['saldo'].iloc[0]
 
     novo_saldo_deb = saldo_conta_deb - valor_mov
     novo_saldo_cred = saldo_conta_cred + valor_mov
@@ -233,6 +233,8 @@ with movimentacao:
     f'De {saldo_conta_deb = } para {saldo_conta_cred = }'
     
     if st.button("Transferir", key="movimento"):
+        #dbm.update_saldo(novo_saldo_deb, conta_deb)
+        #dbm.update_saldo(novo_saldo_cred, df_conta)
         dbm.movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred)
 
 
