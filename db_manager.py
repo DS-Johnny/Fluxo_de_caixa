@@ -286,8 +286,6 @@ def adicionar_movimentacao(conta_debito, conta_credito, valor):
             print(e)
             return e
 
-    
-
 # -------=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=- UPDATE
 def atualizar_saldo(tipo, valor, id_conta):
     saldo = saldo_conta(id_conta)
@@ -333,20 +331,4 @@ def movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred):
             return cur.lastrowid
         except Error as e:
             return e
-        
-def update_saldo(conta, novo_saldo):
-    database = "fluxo.db"
-    conn = create_connection(database)
-    sql = '''UPDATE conta
-                SET saldo = ?
-                WHERE conta = ?'''
-    
-    with conn:
-        try:
-            cur = conn.cursor()
-            cur.execute(sql, (novo_saldo, conta))
-            conn.commit()
 
-            return cur.lastrowid
-        except Error as e:
-            return e
