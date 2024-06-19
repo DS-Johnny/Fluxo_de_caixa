@@ -31,6 +31,7 @@ class ConexaoDb:
         try:
             cur = conn.cursor()
             cur.execute(sql)
+            conn.commit()
         except Error as e:
             print(e)
 

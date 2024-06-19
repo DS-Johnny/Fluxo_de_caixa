@@ -57,10 +57,13 @@ with transacoes:
         
         #FILTRO DE DATA, SELECIONA UM PERÍODO E RETORNA DOIS VALORES, UMA VARIÁVEL DA DATA DE INÍCIO E OUTRA DE FIM
         try:
+            data_min = df['data'].min()
+            data_max = df['data'].max()
+           
             start_date, end_date = st.select_slider(
             "Selecione o período:",
             options=pd.Series(df['data'].unique()).sort_values(),
-            value=(df['data'].min(), df['data'].max())
+            value=(data_min, data_max)
             )
         except:
             st.error('Não há dias suficientes para gerar filtro de período.')

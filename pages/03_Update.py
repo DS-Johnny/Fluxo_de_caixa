@@ -223,19 +223,20 @@ with movimentacao:
     dados = dbm.consultar_contas() # Query com a tabela de contas e saldo
     df_conta = pd.DataFrame(dados) # Cria Dataframe
     
+    try:
+        saldo_conta_deb = df_conta[df_conta['conta'] == conta_deb]['saldo'].iloc[0]
+        saldo_conta_cred = df_conta[df_conta['conta'] == conta_cred]['saldo'].iloc[0]
 
-    saldo_conta_deb = df_conta[df_conta['conta'] == conta_deb]['saldo'].iloc[0]
-    saldo_conta_cred = df_conta[df_conta['conta'] == conta_cred]['saldo'].iloc[0]
+        novo_saldo_deb = saldo_conta_deb - valor_mov
+        novo_saldo_cred = saldo_conta_cred + valor_mov
 
-    novo_saldo_deb = saldo_conta_deb - valor_mov
-    novo_saldo_cred = saldo_conta_cred + valor_mov
-
-    f'De {saldo_conta_deb = } para {saldo_conta_cred = }'
-    
-    if st.button("Transferir", key="movimento"):
-        dbm.movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred)
-        dbm.adicionar_movimentacao(conta_deb, conta_cred, valor_mov)
-
+        f'De {saldo_conta_deb = } para {saldo_conta_cred = }'
+        
+        if st.button("Transferir", key="movimento"):
+            dbm.movimentacao(conta_deb, conta_cred, novo_saldo_deb, novo_saldo_cred)
+            dbm.adicionar_movimentacao(conta_deb, conta_cred, valor_mov)
+    except:
+        st.warning('Não há dados.')
 
 # ----------------- SIDEBAR
 try:
